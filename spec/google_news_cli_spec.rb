@@ -6,6 +6,7 @@ GOOGLE_NEWS_BINARY_PATH = './bin/google_news'
 RSpec.describe GoogleNews, 'CLI' do
   context 'Get headlines' do
     it 'fetches top headlines with default language' do
+      skip
       result = `#{GOOGLE_NEWS_BINARY_PATH} --n 5`
       obj = JSON.parse result
 

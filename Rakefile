@@ -8,4 +8,10 @@ task :default do
   system 'rake --tasks'
 end
 
+task :console do
+  require_relative '../lib/google_news'
+  require 'irb'
+  IRB.start(__FILE__)
+end
+
 RSpec::Core::RakeTask.new(:spec)

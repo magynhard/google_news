@@ -6,7 +6,7 @@ require 'open-uri'
 require 'rss'
 require 'uri'
 
-class GoogleNews
+module GoogleNews
   HEADLINES_RSS = 'https://news.google.com/news/rss'.freeze
   TOPICS_RSS    = 'https://news.google.com/news/rss/headlines/section/topic/'.freeze
   GEO_RSS       = 'https://news.google.com/news/rss/headlines/section/geo/'.freeze

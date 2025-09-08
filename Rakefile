@@ -9,9 +9,9 @@ task :default do
 end
 
 task :console do
-  require_relative '../lib/google_news'
-  require 'irb'
-  IRB.start(__FILE__)
+  require_relative 'lib/google_news'
+  require 'pry'
+  Pry.start
 end
 
 RSpec::Core::RakeTask.new(:spec)

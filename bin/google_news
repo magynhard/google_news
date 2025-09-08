@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/google_news'
+
+arg = ARGV[0]
+
+if %w[help -h --help].include?(arg) || arg.nil? || arg == ''
+  puts <<-TEXT
+    
+    google_news #{GoogleNews::VERSION}
+    https://github.com/magynhard/google_news
+
+    Usage:
+      google_news [options]
+    Options:
+      -h, --help          Show this help message
+      -v, --version       Show version
+      -n, --number N      Number of headlines to fetch (default: 10)
+      -c, --country CC    Country code (default: "us")
+      -l, --language LL   Language code (default: "en")
+      --headlines        Fetch top headlines
+      --topic TOPIC      Fetch headlines for a specific topic (WORLD, NATION, BUSINESS, TECHNOLOGY, ENTERTAINMENT, SPORTS, SCIENCE, HEALTH)
+      --geo LOCATION     Fetch headlines for a specific geographic location (e.g. "48.8566,2.3522" for Paris)
+      --search QUERY     Search headlines for a specific query
+      --website SITE    Fetch headlines from a specific website (e.g. "bbc.com")
+
+  TEXT
+elsif %w[]
+else
+  puts "Invalid command or option. Use --help for usage information."
+end

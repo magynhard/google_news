@@ -6,6 +6,8 @@ require 'open-uri'
 require 'rss'
 require 'uri'
 
+require_relative 'google_news/version'
+
 module GoogleNews
   HEADLINES_RSS = 'https://news.google.com/news/rss'.freeze
   TOPICS_RSS    = 'https://news.google.com/news/rss/headlines/section/topic/'.freeze
@@ -48,7 +50,7 @@ module GoogleNews
   #
   # Get top headlines for a specific geographic location from Google News
   #
-  # @param [String] position e.g. "48.8566,2.3522" for Paris
+  # @param [String] position name e.g. "Berlin" for Berlin
   # @param [String] country
   # @param [String] language
   # @param [Integer] n

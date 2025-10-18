@@ -5,14 +5,15 @@
 require 'open-uri'
 require 'rss'
 require 'uri'
+require 'nokogiri'
 
 require_relative 'google_news/version'
 
 module GoogleNews
   HEADLINES_RSS = 'https://news.google.com/news/rss'.freeze
-  TOPICS_RSS    = 'https://news.google.com/news/rss/headlines/section/topic/'.freeze
-  GEO_RSS       = 'https://news.google.com/news/rss/headlines/section/geo/'.freeze
-  SEARCH_RSS    = 'https://news.google.com/rss/search?q='.freeze
+  TOPICS_RSS = 'https://news.google.com/news/rss/headlines/section/topic/'.freeze
+  GEO_RSS = 'https://news.google.com/news/rss/headlines/section/geo/'.freeze
+  SEARCH_RSS = 'https://news.google.com/rss/search?q='.freeze
 
   TOPICS = %w[WORLD NATION BUSINESS TECHNOLOGY ENTERTAINMENT SPORTS SCIENCE HEALTH].freeze
 
@@ -201,17 +202,18 @@ module GoogleNews
   # Convert an RSS item to a hash
   #
   # @param [RSS::Rss::Channel::Item] item
-  # @return [Hash] with keys :title, :link, :pub_date, :description, and :raw_item
+  # @return [Hash] with keys :title, :link, :pub_date, :descriptions [:title, :link, :author], and :raw_item
   #
   def self.item_to_hash(item)
     {
       title: item.title,
       link: extract_link(item),
       pub_date: (item.respond_to?(:pubDate) ? item.pubDate : nil),
-      description: (item.respond_to?(:description) ? item.description : nil),
+      descriptions: (item.respond_to?(:description) ? parse_description(item.description) : nil),
       raw_item: item
     }
   end
+
   #
   # Extract the link from an RSS item
   #
@@ -223,6 +225,42 @@ module GoogleNews
   def self.extract_link(item)
     return item.link if item.respond_to?(:link)
     nil
+  end
+
+  #
+  # Description can consist of a <a> tag with a link, containing the title, followed by a <font> tag with the authors name.
+  #
+  # But it can also consist of a bunch of news, inside a <ol> list, containing <li> items with a <a> tag, followed by a <font> tag each.
+  #
+  # This method creates a array of hashes with :title, :link and :author keys for each news item found in the description.
+  #
+  # @param [String] description as HTML
+  # @return [Array<Hash>] array of news items with :title, :link and :author keys
+  #
+  def self.parse_description(description)
+    return nil if description.nil?
+    doc = Nokogiri::HTML(description)
+    news_items = []
+    if doc.at_css('ol')
+      doc.css('ol li').each do |li|
+        a_tag = li.at_css('a')
+        font_tag = li.at_css('font')
+        news_items << {
+          title: a_tag ? a_tag.text : nil,
+          link: a_tag ? a_tag['href'] : nil,
+          author: font_tag ? font_tag.text : nil
+        }
+      end
+    else
+      a_tag = doc.at_css('a')
+      font_tag = doc.at_css('font')
+      news_items << {
+        title: a_tag ? a_tag.text : nil,
+        link: a_tag ? a_tag['href'] : nil,
+        author: font_tag ? font_tag.text : nil
+      }
+    end
+    news_items
   end
 
   #

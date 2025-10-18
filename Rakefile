@@ -14,6 +14,25 @@ task :console do
   Pry.start
 end
 
+task :build_gem do
+  version = GoogleNews::VERSION
+  gem_file = "google_news-#{version}.gem"
+  if File.exist? gem_file
+    File.delete gem_file
+  end
+  system "gem build google_news.gemspec"
+end
+
+task :publish => :build_gem do
+  version = GoogleNews::VERSION
+  gem_file = "google_news-#{version}.gem"
+  if File.exist? gem_file
+    system "gem push #{gem_file}"
+  else
+    puts "No gem file found to publish."
+  end
+end
+
 namespace :example do
   task :headlines do
     require_relative 'lib/google_news'
@@ -26,8 +45,9 @@ namespace :example do
       puts "-" * 40
     end
   end
-
 end
+
+
 
 
 RSpec::Core::RakeTask.new(:spec)

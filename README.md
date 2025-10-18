@@ -73,7 +73,25 @@ require 'google_news'
 
 results = GoogleNews.headlines n: 5 # get top 5 news in default language (country: us, language: en)
 puts results
-# => [{"title"=>"Title of the news article", "link"=>"https://link.to/the/article", "pubDate"=>"Wed, 01 Jan 2024 00:00:00 GMT", "source"=>"Source Name"}, ...]
+# => [
+# {
+#   :title =>    "Title of the news article", 
+#   :link =>     "https://link.to/the/article", 
+#   :pub_date => Time("Wed, 01 Jan 2024 00:00:00 GMT"), 
+#   :descriptions => [
+#     {
+#       :title => "First article, like :title",
+#       :link => "https://link.to/the/first/article",
+#       :author => "Author Name",
+#     },
+#    {
+#      :title => "Second article, same topic, similiar to first",
+#      :link => "https://link.to/the/second/article",
+#     :author => "Another Author Name",
+#    },
+#    ...
+#  ],
+# ]
 ```
 
 
